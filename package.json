@@ -1,0 +1,15 @@
+{
+  "name": "switchtab",
+  "version": "1.0.0",
+  "description": "",
+  "author": "hmhao",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.3.2",
+    "gulp-connect": "^5.0.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^1.9.1",
+    "gulp-uglify": "^2.0.0",
+    "webpack": "^1.14.0"
+  }
+}
