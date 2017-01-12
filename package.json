@@ -13,7 +13,7 @@
     "transform": "browserify-shim"
   },
   "browserify-shim": {
-    "jquery": "global:jquery"
+    "jquery": "global:jQuery"
   },
   "devDependencies": {
     "browserify": "^13.3.0",

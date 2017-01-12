@@ -2,11 +2,13 @@ var webpack = require('webpack');
 module.exports = {
     context: __dirname + '/src', // 设置webpack配置中指向的默认目录为项目根目录
     entry: {
-        switchtab: ['./switchtab.js']
+        switchtab: ['./html5polyfill.js', './switchtab.js']
     },
     output: {
         path: __dirname + '/dist', // 设置输出目录
-        filename: '[name].js' // 输出文件名
+        filename: '[name].js', // 输出文件名
+        library: 'SwitchTab', // the name of the exported library
+        libraryTarget: 'umd' // enum
     },
     resolve: {
         root: __dirname + '/src', //绝对路径
@@ -19,7 +21,7 @@ module.exports = {
         }
     },
     externals: {
-        jquery: 'window.$'
+        jquery: 'jQuery'
     },
-    devtool: '#source-map'
+    //devtool: '#source-map'
 };
