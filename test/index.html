@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>SwitchTab</title>
+    <link href="style.css" type="text/css" rel="stylesheet">
+    <script src="//cdn.bootcss.com/jquery/1.12.4/jquery.js" type="text/javascript"></script>
+    <script src="../dist/switchtab.js" type="text/javascript"></script>
+</head>
+
+<body>
+    <div class="bar">
+        <div class="tabs">
+            <ul class="tabbox">
+                <li>
+                    <a href="javascript:void(0)" class="on">选集</a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)">片花</a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)">互动</a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)">推广</a>
+                </li>
+            </ul>
+        </div>
+        <div class="containers">
+            <div class="container">
+                <ul class="episode">
+                    <li class="on"><a href="javascript:void(0)">1</a></li>
+                    <li><a href="javascript:void(0)">2</a></li>
+                    <li><a href="javascript:void(0)">3</a></li>
+                    <li><a href="javascript:void(0)">4</a></li>
+                    <li><a href="javascript:void(0)">5</a></li>
+                    <li><a href="javascript:void(0)">6</a></li>
+                    <li><a href="javascript:void(0)">7</a></li>
+                    <li><a href="javascript:void(0)">8</a></li>
+                    <li><a href="javascript:void(0)">9</a></li>
+                    <li><a href="javascript:void(0)">10</a></li>
+                    <li><a href="javascript:void(0)">11</a></li>
+                    <li><a href="javascript:void(0)">12</a></li>
+                    <li><a href="javascript:void(0)">13</a></li>
+                    <li><a href="javascript:void(0)">14</a></li>
+                    <li><a href="javascript:void(0)">15</a></li>
+                    <li><a href="javascript:void(0)">16</a></li>
+                    <li><a href="javascript:void(0)">17</a></li>
+                    <li><a href="javascript:void(0)">18</a></li>
+                    <li><a href="javascript:void(0)">19</a></li>
+                    <li><a href="javascript:void(0)">20</a></li>
+                </ul>
+            </div>
+            <div class="container" style="display: none">
+                <ul class="imglist">
+                    <li class="">
+                        <a href="javascript:void(0)" title="终极教师片花1" class="pic">
+                            <img src="http://img.movie.kanimg.kankan.com/submovie_img/89/89586/15102201_3_154x90.jpg">
+                            <span class="time">01:08</span>
+                        </a>
+                        <p class="title">终极教师片花1</p>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" title="终极教师片花2" class="pic">
+                            <img src="http://img.movie.kanimg.kankan.com/submovie_img/89/89586/15102202_3_154x90.jpg">
+                            <span class="time">01:10</span>
+                        </a>
+                        <p class="title">终极教师片花2</p>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" title="终极教师片花3" class="pic">
+                            <img src="http://img.movie.kanimg.kankan.com/submovie_img/89/89586/15102203_3_154x90.jpg">
+                            <span class="time">03:03</span>
+                        </a>
+                        <p class="title">终极教师片花3</p>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" title="第2集预告" class="pic">
+                            <img src="http://img.movie.kanimg.kankan.com/submovie_img/89/89586/15103002_3_154x90.jpg">
+                            <span class="time">00:29</span>
+                        </a>
+                        <p class="title">第2集预告</p>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" title="第3集预告" class="pic">
+                            <img src="http://img.movie.kanimg.kankan.com/submovie_img/89/89586/15103103_3_154x90.jpg">
+                            <span class="time">00:30</span>
+                        </a>
+                        <p class="title">第3集预告</p>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" title="第4集预告" class="pic">
+                            <img src="http://img.movie.kanimg.kankan.com/submovie_img/89/89586/15103104_3_154x90.jpg">
+                            <span class="time">00:30</span>
+                        </a>
+                        <p class="title">第4集预告</p>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" title="第5集预告" class="pic">
+                            <img src="http://img.movie.kanimg.kankan.com/submovie_img/89/89586/15103105_3_154x90.jpg">
+                            <span class="time">00:30</span>
+                        </a>
+                        <p class="title">第5集预告</p>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" title="第6集预告" class="pic">
+                            <img src="http://img.movie.kanimg.kankan.com/submovie_img/89/89586/15103106_3_154x90.jpg">
+                            <span class="time">00:30</span>
+                        </a>
+                        <p class="title">第6集预告</p>
+                    </li>
+                </ul>
+            </div>
+            <div class="container" style="display: none">
+                <div class="guess">
+                    <strong class="guess_title">辉煌VS朱雀谁胜谁负？</strong>
+                    <img src="http://img.t.kankan.com/u/guess/201512/57/577dafe76d5170c9c684eaf4f06f29d9.jpg">
+                    <ol class="guess_select">
+                        <li option="A">
+                            <input type="radio" id="radio_A" name="guess_choose"/>
+                            <label for="radio_A">A. 朱雀学院</label>
+                        </li>
+                        <li option="B">
+                            <input type="radio" id="radio_B" name="guess_choose"/>
+                            <label for="radio_B">B. 辉煌武校</label>
+                        </li>
+                        <li option="C">
+                            <input type="radio" id="radio_C" name="guess_choose"/>
+                            <label for="radio_C">C. 平手</label>
+
+                        </li>
+                    </ol>
+                    <a href="javascript:void(0)" class="btn">确定</a>
+                </div>
+            </div>
+            <div class="container" style="display: none">
+                <div class="generalize">
+                    <img data-src="http://asearch.alicdn.com/bao/uploaded/i1/156310299182193073/TB2YODoXmiJ.eBjSspfXXbBKFXa_!!0-saturn_solar.jpg_270x270.jpg_.webp" src="http://asearch.alicdn.com/bao/uploaded/i1/156310299182193073/TB2YODoXmiJ.eBjSspfXXbBKFXa_!!0-saturn_solar.jpg_270x270.jpg_.webp">
+                    <img data-src="http://asearch.alicdn.com/bao/uploaded/i2/156980204778177463/TB2gTTnnFXXXXXLXpXXXXXXXXXX_!!0-saturn_solar.jpg_270x270.jpg_.webp" src="http://asearch.alicdn.com/bao/uploaded/i2/156980204778177463/TB2gTTnnFXXXXXLXpXXXXXXXXXX_!!0-saturn_solar.jpg_270x270.jpg_.webp">
+                    <img data-src="http://asearch.alicdn.com/bao/uploaded/i2/140370294825510762/TB25nx6XOsX61BjSszhXXbzWpXa_!!0-saturn_solar.jpg_270x270.jpg_.webp" src="http://asearch.alicdn.com/bao/uploaded/i2/140370294825510762/TB25nx6XOsX61BjSszhXXbzWpXa_!!0-saturn_solar.jpg_270x270.jpg_.webp">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="index.js" type="text/javascript"></script>
+</html>

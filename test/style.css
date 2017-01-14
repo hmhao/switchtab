@@ -1,0 +1,196 @@
+/*reset*/
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, textarea, p, blockquote, th, td, fieldset {
+    margin: 0;
+    padding: 0;
+}
+
+img, fieldset {
+    border: 0;
+}
+
+div {
+    text-align: left;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-size: 100%;
+}
+
+address, cite, em {
+    font-style: normal;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+li {
+    list-style-type: none;
+}
+
+fieldset, img {
+    border: 0;
+}
+
+label, button {
+    cursor: pointer;
+}
+
+select, input, textarea {
+    font-size: 12px;
+    line-height: 1.2em;
+    outline: none;
+}
+
+body {
+    text-align: left;
+    font: 14px/1.5 Arial, "hiragino sans gb", "microsoft yahei", "simsun", Helvetica, sans-serif;
+    color: #848484;
+    background: #F2F2F3;
+    -webkit-text-size-adjust: none;
+    height: 100%;
+}
+
+a {
+    cursor: pointer;
+    color: #333;
+    text-decoration: none;
+    outline: 0 none;
+}
+
+.btn {
+    display: inline-block;
+    padding: 4px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    background-color: #25baf2;
+    color: #ffffff;
+}
+
+.bar {
+    width: 380px;
+    height: 650px;
+    /*overflow: hidden;*/
+}
+
+.tabs {
+    height: 55px;
+    background: #2f2f2f;
+    overflow: hidden;
+}
+
+.tabs li {
+    float: left;
+}
+
+.tabs a {
+    float: left;
+    display: block;
+    width: 73px;
+    font-size: 16px;
+    color: #aaa;
+    line-height: 55px;
+    text-align: center;
+    position: relative;
+}
+
+.tabs .on {
+    background: #3c3c3c;
+    color: #24baf1;
+}
+
+.container {
+    height: 488px;
+    overflow: hidden;
+    padding: 10px 0 0 10px;
+}
+
+.episode li {
+    float: left;
+    display: inline;
+    width: 56px;
+    margin: 10px 0 0 10px;
+    line-height: 40px;
+    position: relative;
+}
+
+.episode a {
+    display: block;
+    background: #474747;
+    color: #b1b1b1;
+    text-align: center;
+    border: 1px #474747 solid;
+    border-radius: 3px;
+}
+
+.episode .on a, .episode .on a:hover {
+    background: #24baf1;
+    color: #fff;
+    border-color: #24baf1;
+}
+
+.imglist li {
+    float: left;
+    width: 154px;
+    height: 140px;
+    margin: 10px 0 0 10px;
+    color: #a0a0a0;
+    overflow: hidden;
+}
+
+.imglist .pic {
+    position: relative;
+    display: block;
+    height: 90px;
+    margin-bottom: 5px;
+    overflow: hidden;
+}
+
+.imglist .time {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 0 5px;
+    font-size: 12px;
+    color: #b8b8b8;
+}
+
+.guess .guess_title {
+    display: block;
+    margin: 5px 0 15px;
+    font-size: 15px;
+    line-height: 24px;
+    font-weight: normal;
+}
+
+.guess img {
+    display: block;
+    width: 288px;
+}
+
+.guess .guess_select {
+    width: 288px;
+    margin: 0 0 20px 0;
+}
+
+.guess .guess_select li {
+    position: relative;
+    margin-top: 15px;
+    line-height: 20px;
+}
+
+.guess .btn {
+    float: none;
+    display: block;
+    width: 40px;
+    margin: 0 auto;
+}
+
+.generalize img{
+    margin: 10px 0 0 10px;
+}
