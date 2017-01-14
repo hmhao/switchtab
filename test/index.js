@@ -1,5 +1,5 @@
 describe("SwitchTab", function () {
-    var st, option;
+    var st, options, option;
     describe("init", function () {
         afterEach(function () {
             expect(st.data.length).toBe(4);
@@ -53,11 +53,6 @@ describe("SwitchTab", function () {
         });
     });
     describe("add", function () {
-        option = {
-            tab: $('.tabs a:eq(3)'),
-            container: $('.containers .container:eq(3)'),
-            triggerEvent: 'mouseover'
-        };
         beforeEach(function () {
             st = new SwitchTab({
                 tabs: $('.tabs a:lt(3)'),
@@ -65,6 +60,11 @@ describe("SwitchTab", function () {
                 triggerEvent: 'mouseover'
             });
             expect(st.data.length).toBe(3);
+            option = {
+                tab: $('.tabs a:eq(3)'),
+                container: $('.containers .container:eq(3)'),
+                triggerEvent: 'mouseover'
+            };
         });
 
         it("without index", function () {
@@ -152,6 +152,72 @@ describe("SwitchTab", function () {
             option.tab.trigger(option.triggerEvent);
             expect(st.curIndex).toBe(triggerIndex);
             expect(st.data[triggerIndex].tab).toBeSelected();
+        });
+    });
+    describe("handler", function () {
+        beforeEach(function () {
+            st = new SwitchTab();
+            options = {
+                tabs: $('.tabs a'),
+                containers: $('.containers .container')
+            };
+        });
+        afterEach(function () {
+            $.each(st.data, function (i, item) {
+                item.tab.off();
+            });
+        });
+        it("options.beforSwitch", function () {
+            var curIndex, nextIndex;
+            options.beforSwitch = function (cur, next) {
+                expect(cur).toBe(curIndex);
+                expect(next).toBe(nextIndex);
+                expect(st.data[cur].tab).toBeSelected();
+                expect(st.data[next].tab).not.toBeSelected();
+            };
+            st.init(options);
+            curIndex = st.curIndex;
+            nextIndex = 3;
+            st.to(nextIndex);
+        });
+        it("event beforSwitch", function () {
+            var curIndex, nextIndex;
+            st.init(options);
+            st.on('beforSwitch', function (cur, next) {
+                expect(cur).toBe(curIndex);
+                expect(next).toBe(nextIndex);
+                expect(st.data[cur].tab).toBeSelected();
+                expect(st.data[next].tab).not.toBeSelected();
+            });
+            curIndex = st.curIndex;
+            nextIndex = 3;
+            st.to(nextIndex);
+        });
+        it("options.afterSwitch", function () {
+            var prevIndex, curIndex;
+            options.afterSwitch = function (prev, cur) {
+                expect(prev).toBe(prevIndex);
+                expect(cur).toBe(curIndex);
+                expect(st.data[prev].tab).not.toBeSelected();
+                expect(st.data[cur].tab).toBeSelected();
+            };
+            st.init(options);
+            prevIndex = st.curIndex;
+            curIndex = 3;
+            st.to(curIndex);
+        });
+        it("event afterSwitch", function () {
+            var prevIndex, curIndex;
+            st.init(options);
+            st.on('afterSwitch', function (prev, cur) {
+                expect(prev).toBe(prevIndex);
+                expect(cur).toBe(curIndex);
+                expect(st.data[prev].tab).not.toBeSelected();
+                expect(st.data[cur].tab).toBeSelected();
+            });
+            prevIndex = st.curIndex;
+            curIndex = 3;
+            st.to(curIndex);
         });
     });
 });

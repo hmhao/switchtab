@@ -236,7 +236,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        throw 'parse options error:' + options;
 	    }
 
-	    this.to(0);
+	    this.to(0, true);
 	};
 
 	/**
@@ -266,20 +266,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 *  Switch to target tab
 	 *  @param target @see getIndex
+	 *  @param init
 	 */
-	proto.to = function(target){
+	proto.to = function(target, init){
 	    var index = this.getIndex(target);
 	    if(index < 0 || index >= this.data.length || this.curIndex === index) return;
 
 	    var option = this.data[index];
-	    // before switch
-	    var flag = true;
-	    if($.isFunction(option.beforSwitch)){
-	        flag = option.beforSwitch.call(this);
-	    } else {
-	        flag = this.trigger('beforSwitch');
+	    if(!init){
+	        // before switch
+	        var flag = true;
+	        if($.isFunction(option.beforSwitch)){
+	            flag = option.beforSwitch.call(this, this.curIndex, index);
+	        } else {
+	            flag = this.trigger('beforSwitch', [this.curIndex, index]);
+	        }
+	        if(!flag) return;
 	    }
-	    if(!flag) return;
 	    // do switch
 	    var i, len, item;
 	    for(i = 0, len = this.data.length; i < len; i++){
@@ -290,13 +293,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    item = this.data[index];
 	    item.tab.addClass('on');
 	    item.container.show();
-	    this.curIndex = index;
-	    // after switch
-	    if($.isFunction(option.afterSwitch)){
-	        option.afterSwitch.call(this);
-	    } else {
-	        this.trigger('afterSwitch');
+	    if(!init) {
+	        // after switch
+	        if ($.isFunction(option.afterSwitch)) {
+	            option.afterSwitch.call(this, this.curIndex, index);
+	        } else {
+	            this.trigger('afterSwitch', [this.curIndex, index]);
+	        }
 	    }
+	    this.curIndex = index;
 	};
 
 	proto.onTriggerTab = function(event){
