@@ -35,7 +35,6 @@ gulp.task('browserify', function() {
         .pipe(gulp.dest(config.output.path));
 });
 
-//压缩js文件
 gulp.task('min:js', function() {
     return gulp.src(['./dist/*.js'])
         .pipe(uglify({ mangle: { except: ['jquery', '$', 'import', 'module', 'exports'] } }))
