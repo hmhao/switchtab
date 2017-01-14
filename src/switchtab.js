@@ -116,7 +116,7 @@ proto.init = function(options){
  *      triggerEvent: String,
  *      onClass: String
  *  }
- *  @param index Number
+ *  @param index Number. The index must between 0 and the storage array length. If out of the range, push it to the end
  */
 proto.add = function(option, index){
     if(!option.tab || !option.container) return;
@@ -124,7 +124,9 @@ proto.add = function(option, index){
     option.container = $(option.container);
     option = this.extendOption(option);
     index = $.isNumeric(index) ? parseInt(index) : this.data.length;
-
+    if(index < 0 || index > this.data.length){
+        index = this.data.length;
+    }
     this.data.splice(index, 0, option);
     option.tab.on(option.triggerEvent,this.onTriggerTab.bind(this)).data('switch', option);
 };
@@ -137,7 +139,7 @@ proto.add = function(option, index){
 proto.to = function(target){
     if(target === undefined || target == null) return;
     var index = this.getIndex(target);
-    if(index < 0 || index > this.data.length || this.curIndex === index) return;
+    if(index < 0 || index >= this.data.length || this.curIndex === index) return;
 
     var option = this.data[index];
     // before switch
