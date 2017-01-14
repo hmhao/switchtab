@@ -29,8 +29,8 @@ proto.extendOption = function (option) {
 };
 /**
  *  Get tab index.
- *  The target can be <the tab index> | <the tab name> | <the tab Element> |  <the tab jQuery Object>
- *  @param target Number|String|DOMElement|JqueryObject
+ *  The target can be <the tab index> | <the tab name> | <the tab Element> |  <the tab jQuery Object> | object contain above value
+ *  @param target Number|String|DOMElement|JqueryObject|Object.tab
  *  @return the target index in storage array
  */
 proto.getIndex = function (target) {
@@ -52,6 +52,8 @@ proto.getIndex = function (target) {
                 return false;
             }
         }.bind(this));
+    } else if($.isPlainObject(target) && target.tab){
+        return this.getIndex(target.tab);
     }
     return index;
 };
@@ -119,7 +121,7 @@ proto.init = function(options){
  *  @param index Number. The index must between 0 and the storage array length. If out of the range, push it to the end
  */
 proto.add = function(option, index){
-    if(!option.tab || !option.container) return;
+    if(!option.tab || !option.container || this.getIndex(option.tab) != -1) return;
     option.tab = $(option.tab);
     option.container = $(option.container);
     option = this.extendOption(option);
@@ -128,16 +130,15 @@ proto.add = function(option, index){
         index = this.data.length;
     }
     this.data.splice(index, 0, option);
-    option.tab.on(option.triggerEvent,this.onTriggerTab.bind(this)).data('switch', option);
+    option._triggerHandler = this.onTriggerTab.bind(this);
+    option.tab.on(option.triggerEvent,option._triggerHandler).data('switch', option);
 };
 
 /**
  *  Switch to target tab
- *  The target can be <the tab index> | <the tab name> | <the tab Element> |  <the tab jQuery Object>
- *  @param target Number|String|DOMElement|JqueryObject
+ *  @param target @see getIndex
  */
 proto.to = function(target){
-    if(target === undefined || target == null) return;
     var index = this.getIndex(target);
     if(index < 0 || index >= this.data.length || this.curIndex === index) return;
 

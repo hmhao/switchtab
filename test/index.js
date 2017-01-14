@@ -1,13 +1,12 @@
 describe("SwitchTab", function () {
+    var st, option;
     describe("init", function () {
-        var st;
-
         afterEach(function () {
             expect(st.data.length).toBe(4);
             expect(st.curIndex).toBe(0);
             $('.tabs a').each(function (i, tab) {
                 tab = $(tab);
-                var option = tab.data('switch');
+                option = tab.data('switch');
                 expect(option).toBe(st.data[i]);
                 if (i == 0) {
                     expect(tab).toBeSelected();
@@ -53,9 +52,8 @@ describe("SwitchTab", function () {
             }]);
         });
     });
-
     describe("add", function () {
-        var option = {
+        option = {
             tab: $('.tabs a:eq(3)'),
             container: $('.containers .container:eq(3)'),
             triggerEvent: 'mouseover'
@@ -68,12 +66,10 @@ describe("SwitchTab", function () {
             });
             expect(st.data.length).toBe(3);
         });
-        afterEach(function () {
-            expect(st.data.length).toBe(4);
-        });
 
         it("without index", function () {
             st.add(option);
+            expect(st.data.length).toBe(4);
         });
 
         var index = -5 + Math.round(Math.random() * 15);
@@ -85,6 +81,18 @@ describe("SwitchTab", function () {
                 index = len - 1;
             }
             expect(st.data[index]).toEqual(option.tab.data('switch'));
+            expect(st.data.length).toBe(4);
+        });
+
+        it("tab exist", function () {
+            var len = st.data.length;
+            option = {
+                tab: $('.tabs a:eq(1)'),
+                container: $('.containers .container:eq(1)'),
+                triggerEvent: 'mouseover'
+            };
+            st.add(option);
+            expect(st.data.length).toBe(len);
         });
     });
     describe("to", function () {
@@ -95,6 +103,12 @@ describe("SwitchTab", function () {
                 triggerEvent: 'mouseover'
             });
         });
+        afterEach(function () {
+            $.each(st.data, function (i, item) {
+                item.tab.off();
+            });
+        });
+
         var index = -3 + Math.round(Math.random() * 10);
         it("pass " + index, function () {
             st.to(index);
@@ -106,15 +120,16 @@ describe("SwitchTab", function () {
                 expect(st.data[index].tab).toBeSelected();
             }
         });
+
         var tabIndex = Math.floor(Math.random() * 4);
         it("pass tab[" + tabIndex + "] element", function () {
-            var option = st.data[tabIndex];
+            option = st.data[tabIndex];
             st.to(option.tab[0]);
             expect(st.curIndex).toBe(tabIndex);
             expect(option.tab).toBeSelected();
         });
         it("pass tab[" + tabIndex + "] jquery object", function () {
-            var option = st.data[tabIndex];
+            option = st.data[tabIndex];
             st.to(option.tab);
             expect(st.curIndex).toBe(tabIndex);
             expect(option.tab).toBeSelected();
@@ -129,6 +144,14 @@ describe("SwitchTab", function () {
             st.to(i);
             expect(st.curIndex).toBe(i);
             expect(st.data[i].tab).toBeSelected();
+        });
+
+        var triggerIndex = Math.floor(Math.random() * 4);
+        it("trigger by tab[" + triggerIndex + "] event", function () {
+            option = st.data[triggerIndex];
+            option.tab.trigger(option.triggerEvent);
+            expect(st.curIndex).toBe(triggerIndex);
+            expect(st.data[triggerIndex].tab).toBeSelected();
         });
     });
 });
