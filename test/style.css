@@ -73,8 +73,8 @@ a {
 
 .bar {
     width: 380px;
-    height: 650px;
-    /*overflow: hidden;*/
+    height: 450px;
+    overflow: hidden;
 }
 
 .tabs {
