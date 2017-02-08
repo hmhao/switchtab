@@ -47,21 +47,21 @@ or
 Same as above options for SwitchTab constructor 
 
 ## `st.getOption(target [, ignoreEnable])`
-Get target option.
-The target can be `tab index` | `tab name` | `tab Element` | `tab jQuery Object` | `object contain above value`
+Get target option.<br>
+The target can be `tab index` | `tab name` | `tab Element` | `tab jQuery Object` | `object contain above value`<br>
 If `ignoreEnable` param true, return the option which ignore its enable prototype, otherwise return the option which its enable prototype is true.
 
 ## `st.getIndex(target [, ignoreEnable])`
-Get target index.
-The target can be `tab index` | `tab name` | `tab Element` | `tab jQuery Object` | `object contain above value`
+Get target index.<br>
+The target can be `tab index` | `tab name` | `tab Element` | `tab jQuery Object` | `object contain above value`<br>
 If `ignoreEnable` param true, return the index which ignore its enable prototype, otherwise return the index which its enable prototype is true.
 
 ## `st.add(option [, index])`
-Add `option` include tab and container to the end of Swtichtab storage array.
+Add `option` include tab and container to the end of Swtichtab storage array.<br>
 If `index` param, then intert into the index postion.
 
 ## `st.to(target [, force, init])`
-Switch to target tab.
+Switch to target tab.<br>
 The target can be `tab index` | `tab name` | `tab Element` | `tab jQuery Object`
 
 ## `st.enable(target)`
