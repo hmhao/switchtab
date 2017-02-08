@@ -1,5 +1,6 @@
+var st;
 describe("SwitchTab", function () {
-    var st, options, option;
+    var options, option;
     describe("init", function () {
         afterEach(function () {
             expect(st.data.length).toBe(4);
@@ -219,5 +220,107 @@ describe("SwitchTab", function () {
             curIndex = 3;
             st.to(curIndex);
         });
+    });
+    describe("disable", function () {
+        beforeEach(function () {
+            st = new SwitchTab({
+                tabs: $('.tabs a').show(),
+                containers: $('.containers .container'),
+                triggerEvent: 'mouseover',
+                enable: true
+            });
+        });
+        afterEach(function () {
+            $.each(st.data, function (i, item) {
+                item.tab.off();
+            });
+        });
+        var disableTest = function (spec) {
+            return function(){
+                st.to(spec.to);
+                st.disable(spec.disable);
+                //console.log(st.curIndex);
+                if(spec.disable < spec.to){
+                    expect(st.curIndex).toBe(spec.to-1);
+                    expect(st.data[spec.to].tab).toBeSelected();
+                }else if(spec.disable > spec.to){
+                    expect(st.curIndex).toBe(spec.to);
+                    expect(st.data[spec.to].tab).toBeSelected();
+                }else {
+                    if(spec.disable == st.data.length - 1){
+                        expect(st.curIndex).toBe(spec.disable-1);
+                        expect(st.data[spec.disable-1].tab).toBeSelected();
+                    }else{
+                        expect(st.curIndex).toBe(spec.disable);
+                        expect(st.data[spec.disable+1].tab).toBeSelected();
+                    }
+                }
+            };
+        };
+        /*var specs = (function(){
+            var result = [];
+            for(var i = 0; i < 4; i++){
+                for(var j = 0; j < 4; j++){
+                    result.push({
+                        to: i,
+                        disable: j
+                    });
+                }
+            }
+            return result;
+        })();
+        for(var i = 0, len = specs.length, spec; i < len; i++){
+            spec = specs[i];
+            it("to " + spec.to + ", disable " + spec.disable, disableTest(spec));
+        }*/
+        var spec = {to: Math.floor(Math.random() * 4), disable: Math.floor(Math.random() * 4)};
+        it("to " + spec.to + ", disable " + spec.disable, disableTest(spec));
+    });
+    describe("enable", function () {
+        var disable = Math.floor(Math.random() * 4);
+        beforeEach(function () {
+            st = new SwitchTab({
+                tabs: $('.tabs a').show(),
+                containers: $('.containers .container'),
+                triggerEvent: 'mouseover',
+                enable: true
+            });
+            st.disable(disable);
+        });
+        var enableTest = function (spec) {
+            return function(){
+                st.to(spec.to);
+                var isVail = st.getOption(spec.enable, true).enable === false;
+                st.enable(spec.enable);
+                if(isVail){
+                    if(spec.enable <= spec.to){
+                        expect(st.curIndex).toBe(spec.to+1);
+                        expect(st.data[spec.to+1].tab).toBeSelected();
+                    }else{
+                        expect(st.curIndex).toBe(spec.to);
+                    }
+                }else{
+                    expect(st.curIndex).toBe(spec.to);
+                }
+            };
+        };
+        /*var specs = (function(){
+            var result = [];
+            for(var i = 0; i < 3; i++){
+                for(var j = 0; j < 4; j++){
+                    result.push({
+                        to: i,
+                        enable: j
+                    });
+                }
+            }
+            return result;
+        })();
+        for(var i = 0, len = specs.length, spec; i < len; i++){
+            spec = specs[i];
+            it("disable " + disable + ", to " + spec.to + ", enable " + spec.enable, enableTest(spec));
+        }*/
+        var spec = {to: Math.floor(Math.random() * 3), enable: Math.floor(Math.random() * 4)};
+        it("disable " + disable + ", to " + spec.to + ", enable " + spec.enable, enableTest(spec));
     });
 });

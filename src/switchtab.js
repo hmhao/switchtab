@@ -175,6 +175,40 @@ proto.add = function(option, index){
     option.tab.on(option.triggerEvent,option._triggerHandler).data('switch', option);
 };
 
+/**
+ *  Enable the target tab
+ *  @param target @see getOption
+ */
+proto.enable = function(target){
+    var option = this.getOption(target, true);
+    var index = this.getIndex(option, true);
+    if(!option || option.enable) return;
+
+    option.enable = true;
+    option.tab.show();
+    if(index <= this.curIndex){
+        this.to(this.curIndex + 1, true, false);
+    }
+};
+
+/**
+ *  Disable the target tab
+ *  @param target @see getOption
+ */
+proto.disable = function(target){
+    var option = this.getOption(target);
+    var index = this.getIndex(option);
+    if(!option || !option.enable) return;
+
+    option.enable = false;
+    option.tab.hide().removeClass('on');
+    option.container.hide();
+    
+    if(index <= this.curIndex){
+        var toIndex = (index < this.curIndex || this.curIndex == this.data.length - 1) ? this.curIndex - 1 : this.curIndex;
+        this.to(toIndex, true, false);
+    }
+};
 
 /**
  *  Switch to target tab
