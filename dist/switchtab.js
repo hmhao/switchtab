@@ -396,6 +396,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.curIndex = index;
 	};
 
+	/**
+	 *  Switch to previous tab
+	 */
+	proto.prev = function(){
+	    this.to(this.curIndex - 1);
+	};
+
+	/**
+	 *  Switch to next tab
+	 */
+	proto.next = function(){
+	    this.to(this.curIndex + 1);
+	};
+
 	proto.onTriggerTab = function(event){
 	    var target = event.currentTarget;
 	    var option = $(target).data('switch');

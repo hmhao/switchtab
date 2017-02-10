@@ -64,6 +64,12 @@ If `index` param, then intert into the index postion.
 Switch to target tab.<br>
 The target can be `tab index` | `tab name` | `tab Element` | `tab jQuery Object`
 
+## `st.prev()`
+Switch to previous tab
+
+## `st.next()`
+Switch to next tab
+
 ## `st.enable(target)`
 Enable the target tab.<br>
 If `target` is integer, it's based on the true position of the invisible tab.

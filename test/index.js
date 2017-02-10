@@ -4,6 +4,7 @@ describe("SwitchTab", function () {
     testInit();
     testAdd();
     testTo();
+    testPrevNext();
     testHandler();
     testDisable();
     testEnable();
@@ -169,6 +170,60 @@ function testTo(){
             expect(st.curIndex).toBe(triggerIndex);
             expect(st.data[triggerIndex].tab).toBeSelected();
         });
+    });
+}
+
+function testPrevNext(){
+    describe("PrevNext", function () {
+        beforeEach(function () {
+            st = new SwitchTab({
+                tabs: $('.tabs a'),
+                containers: $('.containers .container'),
+                triggerEvent: 'mouseover'
+            });
+        });
+        afterEach(function () {
+            $.each(st.data, function (i, item) {
+                item.tab.off();
+            });
+        });
+
+        var testItem = function(isPrev){
+            return function(){
+                var lastIndex = st.curIndex;
+                if(isPrev){
+                    st.prev();
+                    if(lastIndex === 0){
+                        expect(st.curIndex).toBe(lastIndex);
+                        expect(st.data[lastIndex].tab).toBeSelected();
+                    }else{
+                        expect(st.curIndex).toBe(lastIndex - 1);
+                        expect(st.data[lastIndex - 1].tab).toBeSelected();
+                    }
+                }else{
+                    st.next();
+                    if(lastIndex === st.data.length - 1){
+                        expect(st.curIndex).toBe(lastIndex);
+                        expect(st.data[lastIndex].tab).toBeSelected();
+                    }else{
+                        expect(st.curIndex).toBe(lastIndex + 1);
+                        expect(st.data[lastIndex + 1].tab).toBeSelected();
+                    }
+                }
+            };
+        };
+
+        var specs = (function(){
+            var result = [];
+            for(var i = 0; i < 10; i++){
+                result.push(Math.round(Math.random()));
+            }
+            return result;
+        })();
+        for(var i = 0, len = specs.length, spec; i < len; i++){
+            spec = specs[i];
+            it((spec ? "prev " : "next "), testItem(spec));
+        }
     });
 }
 
