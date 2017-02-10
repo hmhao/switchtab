@@ -288,22 +288,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *  @param index Number. The index must between 0 and the storage array length. If out of the range, push it to the end
 	 */
 	proto.add = function(option, index){
-	    if(!option.tab || !option.container || this.getOption(option.tab)) return;
-	    option.tab = $(option.tab);
-	    option.container = $(option.container);
-	    option = this.extendOption(option);
-	    if(!option.enable){
-	        option.tab.hide().removeClass('on');
-	        option.container.hide();
-	        this.disableNum++;
-	    }
+	    if(!option.tab || !option.container) return;
 	    index = $.isNumeric(index) ? parseInt(index) : this.data.length;
 	    if(index < 0 || index > this.data.length){
 	        index = this.data.length;
 	    }
-	    this.data.splice(index, 0, option);
-	    option._triggerHandler = this.onTriggerTab.bind(this);
-	    option.tab.on(option.triggerEvent,option._triggerHandler).data('switch', option);
+	    var opt = this.getOption(option.tab, true);
+	    if(opt){
+	        var lastIndex = this.getIndex(opt, true);
+	        if(lastIndex != index){
+	            this.data.splice(lastIndex, 1);
+	            this.data.splice(index, 0, opt);
+	        }
+	    }else{
+	        option.tab = $(option.tab);
+	        option.container = $(option.container);
+	        option = this.extendOption(option);
+	        if(!option.enable){
+	            option.tab.hide().removeClass('on');
+	            option.container.hide();
+	            this.disableNum++;
+	        }
+	        option._triggerHandler = this.onTriggerTab.bind(this);
+	        option.tab.on(option.triggerEvent,option._triggerHandler).data('switch', option);
+	        this.data.splice(index, 0, option);
+	    }
 	};
 
 	/**

@@ -107,6 +107,11 @@ function testAdd(){
             };
             st.add(option);
             expect(st.data.length).toBe(len);
+            expect(st.data[2].tab.get(0)).toBe(option.tab.get(0));
+            var newIndex = Math.floor(Math.random() * len);
+            st.add(option, newIndex);
+            expect(st.data.length).toBe(len);
+            expect(st.data[newIndex].tab.get(0)).toBe(option.tab.get(0));
         });
     });
 }
