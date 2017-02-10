@@ -149,6 +149,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    container: null,
 	    name: '',
 	    triggerEvent: 'click',
+	    triggerDelay: 0,
 	    beforSwitch: null,
 	    afterSwitch: null,
 	    onClass: 'on',
@@ -295,24 +296,33 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    var opt = this.getOption(option.tab, true);
 	    if(opt){
-	        var lastIndex = this.getIndex(opt, true);
-	        if(lastIndex != index){
-	            this.data.splice(lastIndex, 1);
-	            this.data.splice(index, 0, opt);
-	        }
-	    }else{
-	        option.tab = $(option.tab);
-	        option.container = $(option.container);
-	        option = this.extendOption(option);
-	        if(!option.enable){
-	            option.tab.hide().removeClass('on');
-	            option.container.hide();
-	            this.disableNum++;
-	        }
-	        option._triggerHandler = this.onTriggerTab.bind(this);
-	        option.tab.on(option.triggerEvent,option._triggerHandler).data('switch', option);
-	        this.data.splice(index, 0, option);
+	        opt.tab.off('.switchtab');
+	        this.data.splice(this.getIndex(opt, true), 1);
 	    }
+	    option.tab = $(option.tab);
+	    option.container = $(option.container);
+	    option = this.extendOption(option);
+	    if(!option.enable){
+	        option.tab.hide().removeClass('on');
+	        option.container.hide();
+	        this.disableNum++;
+	    }
+	    option._triggerHandler = function(event){
+	        if(option.triggerDelay){
+	            option._triggerDelayTimer = setTimeout(function(){
+	                this.onTriggerTab(event);
+	            }.bind(this), option.triggerDelay);
+	        }else{
+	            this.onTriggerTab(event);
+	        }
+	    }.bind(this);
+	    option.tab.on(option.triggerEvent + '.switchtab',option._triggerHandler).data('switch', option);
+	    if(option.triggerEvent == 'mouseover' && option.triggerDelay){
+	        option.tab.on('mouseout.switchtab', function(){
+	            clearTimeout(option._triggerDelayTimer);
+	        });
+	    }
+	    this.data.splice(index, 0, option);
 	};
 
 	/**
