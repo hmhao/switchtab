@@ -9,6 +9,7 @@ var SwitchTab = function(options){
 
     this.data = [];
     this.curIndex = -1;
+    this.disableNum = 0;
     options && this.init(options);
 };
 
@@ -165,6 +166,7 @@ proto.add = function(option, index){
     if(!option.enable){
         option.tab.hide().removeClass('on');
         option.container.hide();
+        this.disableNum++;
     }
     index = $.isNumeric(index) ? parseInt(index) : this.data.length;
     if(index < 0 || index > this.data.length){
@@ -177,7 +179,7 @@ proto.add = function(option, index){
 
 /**
  *  Enable the target tab
- *  @param target @see getOption
+ *  @param target @see getOption. If target is integer, it's based on the true position of the invisible tab.
  */
 proto.enable = function(target){
     var option = this.getOption(target, true);
@@ -186,14 +188,19 @@ proto.enable = function(target){
 
     option.enable = true;
     option.tab.show();
-    if(index <= this.curIndex){
-        this.to(this.curIndex + 1, true, false);
+    this.disableNum--;
+    if(this.disableNum == this.data.length - 1){
+        this.to(0);
+    }else{
+        if(index <= this.curIndex){
+            this.curIndex++;
+        }
     }
 };
 
 /**
  *  Disable the target tab
- *  @param target @see getOption
+ *  @param target @see getOption. If target is integer, it's base on the current visible tab position.
  */
 proto.disable = function(target){
     var option = this.getOption(target);
@@ -203,10 +210,19 @@ proto.disable = function(target){
     option.enable = false;
     option.tab.hide().removeClass('on');
     option.container.hide();
-    
-    if(index <= this.curIndex){
-        var toIndex = (index < this.curIndex || this.curIndex == this.data.length - 1) ? this.curIndex - 1 : this.curIndex;
-        this.to(toIndex, true, false);
+    this.disableNum++;
+
+    if(index < this.curIndex){
+        this.curIndex--;
+    }else if(index == this.curIndex){
+        var toIndex = this.trigger('disableCurrent', [this.curIndex, index]);
+        toIndex = $.isNumeric(toIndex) ? toIndex : this.curIndex - 1;//default choose the previous tab
+        toIndex = Math.min(Math.max(0, toIndex), this.data.length - 1);
+        if(this.disableNum == this.data.length){
+            this.curIndex = -1;
+        }else{
+            this.to(toIndex, true, false);
+        }
     }
 };
 

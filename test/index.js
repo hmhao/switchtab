@@ -1,6 +1,15 @@
-var st;
+var st, options, option;
+
 describe("SwitchTab", function () {
-    var options, option;
+    testInit();
+    testAdd();
+    testTo();
+    testHandler();
+    testDisable();
+    testEnable();
+});
+
+function testInit(){
     describe("init", function () {
         afterEach(function () {
             expect(st.data.length).toBe(4);
@@ -53,6 +62,9 @@ describe("SwitchTab", function () {
             }]);
         });
     });
+}
+
+function testAdd(){
     describe("add", function () {
         beforeEach(function () {
             st = new SwitchTab({
@@ -96,6 +108,9 @@ describe("SwitchTab", function () {
             expect(st.data.length).toBe(len);
         });
     });
+}
+
+function testTo(){
     describe("to", function () {
         beforeEach(function () {
             st = new SwitchTab({
@@ -155,6 +170,9 @@ describe("SwitchTab", function () {
             expect(st.data[triggerIndex].tab).toBeSelected();
         });
     });
+}
+
+function testHandler(){
     describe("handler", function () {
         beforeEach(function () {
             st = new SwitchTab();
@@ -221,11 +239,15 @@ describe("SwitchTab", function () {
             st.to(curIndex);
         });
     });
+}
+
+function testDisable(){
     describe("disable", function () {
         beforeEach(function () {
             st = new SwitchTab({
                 tabs: $('.tabs a').show(),
                 containers: $('.containers .container'),
+                names: $('.tabs a').map(function(){return $(this).attr('name')}),
                 triggerEvent: 'mouseover',
                 enable: true
             });
@@ -247,12 +269,12 @@ describe("SwitchTab", function () {
                     expect(st.curIndex).toBe(spec.to);
                     expect(st.data[spec.to].tab).toBeSelected();
                 }else {
-                    if(spec.disable == st.data.length - 1){
-                        expect(st.curIndex).toBe(spec.disable-1);
-                        expect(st.data[spec.disable-1].tab).toBeSelected();
-                    }else{
+                    if(spec.disable == 0){
                         expect(st.curIndex).toBe(spec.disable);
                         expect(st.data[spec.disable+1].tab).toBeSelected();
+                    }else{
+                        expect(st.curIndex).toBe(spec.disable-1);
+                        expect(st.data[spec.disable-1].tab).toBeSelected();
                     }
                 }
             };
@@ -276,6 +298,9 @@ describe("SwitchTab", function () {
         var spec = {to: Math.floor(Math.random() * 4), disable: Math.floor(Math.random() * 4)};
         it("to " + spec.to + ", disable " + spec.disable, disableTest(spec));
     });
+}
+
+function testEnable(){
     describe("enable", function () {
         var disable = Math.floor(Math.random() * 4);
         beforeEach(function () {
@@ -323,4 +348,4 @@ describe("SwitchTab", function () {
         var spec = {to: Math.floor(Math.random() * 3), enable: Math.floor(Math.random() * 4)};
         it("disable " + disable + ", to " + spec.to + ", enable " + spec.enable, enableTest(spec));
     });
-});
+}

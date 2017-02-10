@@ -55,3 +55,4 @@ gulp.task('server', function() {
 
 gulp.task('dev', ['clean', 'webpack']);
 gulp.task('build', ['clean', 'webpack', 'min:js']);
+gulp.task('test', ['server', 'watch']);

@@ -65,7 +65,9 @@ Switch to target tab.<br>
 The target can be `tab index` | `tab name` | `tab Element` | `tab jQuery Object`
 
 ## `st.enable(target)`
-Enable the target tab.
+Enable the target tab.<br>
+If `target` is integer, it's based on the true position of the invisible tab.
 
 ## `st.disable(target)`
-Disable the target tab.
+Disable the target tab.<br>
+If `target` is integer, it's base on the current visible tab position.
