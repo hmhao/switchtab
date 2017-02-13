@@ -15,7 +15,7 @@ var SwitchTab = function(options){
 
 var proto = SwitchTab.prototype = new EventEmitter();
 
-proto.defaultOptions = {
+SwitchTab.defaultOptions = {
     tab: null,
     container: null,
     name: '',
@@ -29,7 +29,7 @@ proto.defaultOptions = {
 
 /** Extend the option merge by the defaultOptions and return a new option. */
 proto.extendOption = function (option) {
-    return $.extend(new _SwitchOption(), this.defaultOptions, option);
+    return $.extend(new _SwitchOption(), SwitchTab.defaultOptions, option);
 };
 /**
  *  Get target option.
