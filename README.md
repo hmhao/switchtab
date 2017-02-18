@@ -4,7 +4,8 @@
 ```
 var st = new SwitchTab({
     tabs: $('.tabs a'),
-    containers: $('.containers .container'),
+    containers: $('.containers .container')
+}, {
     triggerEvent: 'mouseover'
 });
 ```
@@ -14,55 +15,66 @@ var st = new SwitchTab();
 st.init({
     tabs: $('.tabs a'),
     containers: $('.containers .container'),
+    names: $('.tabs a').map(function(){return $(this).attr('name')})
+}, {
     triggerEvent: 'mouseover'
 });
 ```
 
 # Methods
 
-##  `new SwitchTab(options)`
-options
+##  `new SwitchTab(items, options)`
+items
 ```
 {
     tabs: Array < DOMElement | JqueryObject | JquerySelectors > ,
-    container: Array < DOMElement | JqueryObject | JquerySelectors > ,
+    containers: Array < DOMElement | JqueryObject | JquerySelectors > ,
     names: Array < String > ,
-    triggerEvent: String,
-    onClass: String
+    enables: Array < Boolean > 
 }
 or
 [
     {
-        tab: DOMElement | JqueryObject | JquerySelectors,
-        container: DOMElement | JqueryObject | JquerySelectors,
-        triggerEvent: String,
-        onClass: String
+        tab: DOMElement | JqueryObject | JquerySelectors ,
+        container: DOMElement | JqueryObject | JquerySelectors ,
+        name: String ,
+        enable: Boolean
     },
     ...
 ]
+```
+
+options
+```
+{
+    triggerEvent: String,
+    triggerDelay: Number,
+    activeClass: String
+    startIndex: Number
+}
 
 ```
 
-## `st.init(options)`
+## `st.init(items, options)`
 Same as above options for SwitchTab constructor 
 
-## `st.getOption(target [, ignoreEnable])`
-Get target option.<br>
-The target can be `tab index` | `tab name` | `tab Element` | `tab jQuery Object` | `object contain above value`<br>
+## `st.getItem(target [, ignoreEnable])`
+Get target item.<br>
+The target can be `SwitchItem` | `tab index` | `tab name` | `tab Element` | `tab jQuery Object`<br>
 If `ignoreEnable` param true, return the option which ignore its enable prototype, otherwise return the option which its enable prototype is true.
 
 ## `st.getIndex(target [, ignoreEnable])`
 Get target index.<br>
-The target can be `tab index` | `tab name` | `tab Element` | `tab jQuery Object` | `object contain above value`<br>
+The target can be `SwitchItem` | `tab index` | `tab name` | `tab Element` | `tab jQuery Object`<br>
 If `ignoreEnable` param true, return the index which ignore its enable prototype, otherwise return the index which its enable prototype is true.
 
-## `st.add(option [, index])`
-Add `option` include tab and container to the end of Swtichtab storage array.<br>
+## `st.add(item [, index])`
+Add `item` include tab and container to the end of Swtichtab storage array.<br>
 If `index` param, then intert into the index postion.
 
-## `st.to(target [, force, init])`
+## `st.to(target [, force])`
 Switch to target tab.<br>
-The target can be `tab index` | `tab name` | `tab Element` | `tab jQuery Object`
+The target can be `SwitchItem` | `tab index` | `tab name` | `tab Element` | `tab jQuery Object`
 
 ## `st.prev()`
 Switch to previous tab

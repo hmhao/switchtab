@@ -104,7 +104,7 @@ proto.getIndex = function (target, ignoreEnable) {
  *  @param items
  *  {
  *      tabs: Array<DOMElement|JqueryObject|JquerySelectors>,
- *      container: Array<DOMElement|JqueryObject|JquerySelectors>,
+ *      containers: Array<DOMElement|JqueryObject|JquerySelectors>,
  *      names: Array<String>
  *      enables: Array<Boolean>
  *  }
