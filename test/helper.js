@@ -1,10 +1,11 @@
 var toBeSelectedCompare = function (negative) {
     return function (actual, expected) {
         var tab = $(actual),
-            option = tab.data('switch');
+            data = tab.data('switch'),
+            activeClass = data.root.settings.activeClass;
         return {
-            //pass: negative ? !tab.hasClass(option.onClass) : tab.hasClass(option.onClass)
-            pass: negative ^ tab.hasClass(option.onClass)//异或运算
+            //pass: negative ? !tab.hasClass(activeClass) : tab.hasClass(activeClass)
+            pass: negative ^ tab.hasClass(activeClass)//异或运算
         };
     }
 };

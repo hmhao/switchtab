@@ -62,6 +62,14 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 1 */
 /***/ function(module, exports) {
 
+	if(!Object.create){
+	    Object.create = function(ptp) {
+	        var inheritance = function() {};
+	        inheritance.prototype = ptp;
+	        return new inheritance();
+	    };
+	}
+
 	if (!Function.prototype.bind) {
 	    Function.prototype.bind = function (oThis) {
 	        if (typeof this !== 'function') {
@@ -131,45 +139,49 @@ return /******/ (function(modules) { // webpackBootstrap
 	var $ = __webpack_require__(4);
 	var Util = __webpack_require__(5);
 
-	var _SwitchOption = function(){};
-
-	var SwitchTab = function(options){
-	    EventEmitter.call(this);
-
-	    this.data = [];
-	    this.curIndex = -1;
-	    this.disableNum = 0;
-	    options && this.init(options);
+	var SwitchItem = function(item, root){
+	    $.extend(this, SwitchItem.defaults, item);
+	    this.root = root;
 	};
 
-	var proto = SwitchTab.prototype = new EventEmitter();
-
-	proto.defaultOptions = {
+	SwitchItem.defaults = {
 	    tab: null,
 	    container: null,
 	    name: '',
-	    triggerEvent: 'click',
-	    triggerDelay: 0,
-	    beforSwitch: null,
-	    afterSwitch: null,
-	    onClass: 'on',
 	    enable: true
 	};
-
-	/** Extend the option merge by the defaultOptions and return a new option. */
-	proto.extendOption = function (option) {
-	    return $.extend(new _SwitchOption(), this.defaultOptions, option);
+	var SwitchTab = function(items, options){
+	    this.settings = null;
+	    this.data = [];
+	    this.curIndex = -1;
+	    this.curItem = null;
+	    this.disableNum = 0;
+	    items && this.init(items, options);
 	};
+
+	Util.inherits(SwitchTab, EventEmitter);
+	var proto = SwitchTab.prototype;
+
+	SwitchTab.SwitchItem = SwitchItem;
+	SwitchTab.defaultSetting = {
+	    namespace: 'switch',
+	    eventSuffix: '.switch',
+	    triggerEvent: 'click',
+	    triggerDelay: 0,
+	    activeClass: 'on',
+	    startIndex: 0
+	};
+
 	/**
-	 *  Get target option.
-	 *  The target can be <the tab index> | <the tab name> | <the tab Element> |  <the tab jQuery Object> | object contain above value
-	 *  @param target Number|String|DOMElement|JqueryObject|Object.tab
+	 *  Get target item.
+	 *  The target can be <SwitchItem> | <the tab index> | <the tab name> | <the tab Element> |  <the tab jQuery Object>
+	 *  @param target SwitchItem|Number|String|DOMElement|JqueryObject
 	 *  @param ignoreEnable Boolean
-	 *  @return the target option in storage array
+	 *  @return the target item in storage array
 	 */
-	proto.getOption = function (target, ignoreEnable) {
+	proto.getItem = function (target, ignoreEnable) {
 	    var result = null;
-	    if(target instanceof _SwitchOption){
+	    if(target instanceof SwitchItem){
 	        result = target;
 	    }else if($.isNumeric(target)){
 	        var targetIndex = parseInt(target);
@@ -195,147 +207,160 @@ return /******/ (function(modules) { // webpackBootstrap
 	                return false;
 	            }
 	        }.bind(this));
-	    } else if($.isPlainObject(target) && target.tab){
-	        return this.getOption(target.tab, ignoreEnable);
 	    }
 	    return result;
 	};
 
 	/**
 	 *  Get target index.
-	 *  The target can be <the tab index> | <the tab name> | <the tab Element> |  <the tab jQuery Object> | object contain above value
-	 *  @param target Number|String|DOMElement|JqueryObject|Object.tab
+	 *  The target can be <SwitchItem> | <the tab index> | <the tab name> | <the tab Element> |  <the tab jQuery Object>
+	 *  @param target SwitchItem|Number|String|DOMElement|JqueryObject
 	 *  @param ignoreEnable Boolean
 	 *  @return the target index which its enable prototype is true in storage array
 	 */
 	proto.getIndex = function (target, ignoreEnable) {
 	    var index = -1;
-	    var option = this.getOption(target, ignoreEnable);
-	    if(option){
+	    var targetItem = this.getItem(target, ignoreEnable);
+	    if(targetItem){
 	        var targetIndex = -1;
 	        $.each(this.data, function (i, item) {
 	            if(ignoreEnable || item.enable){
 	                targetIndex++;
-	                if(item === option){
+	                if(item === targetItem){
 	                    index = targetIndex;
 	                    return false;
 	                }
 	            }
-	        }.bind(this));
+	        });
 	    }
 	    return index;
 	};
 
 	/**
-	 *  Initialize the options
-	 *  @param options
+	 *  Initialize the items with options
+	 *  @param items
 	 *  {
-	 *   tabs: Array<DOMElement|JqueryObject|JquerySelectors>,
-	 *   container: Array<DOMElement|JqueryObject|JquerySelectors>,
-	 *   names: Array<String>,
-	 *   triggerEvent: String,
-	 *   onClass: String
+	 *      tabs: Array<DOMElement|JqueryObject|JquerySelectors>,
+	 *      container: Array<DOMElement|JqueryObject|JquerySelectors>,
+	 *      names: Array<String>
+	 *      enables: Array<Boolean>
 	 *  }
 	 *  or
 	 *  [
 	 *   {
 	 *      tab: DOMElement|JqueryObject|JquerySelectors,
 	 *      container: DOMElement|JqueryObject|JquerySelectors,
-	 *      triggerEvent: String,
-	 *      onClass: String
+	 *      name: String,
+	 *      enable: Boolean
 	 *   },
 	 *   ...
 	 *  ]
+	*  @param options
+	 *  {
+	 *      triggerEvent: String,
+	 *      triggerDelay: Number,
+	 *      activeClass: String
+	 *      startIndex: Number
+	 *   }
 	 */
-	proto.init = function(options){
+	proto.init = function(items, options){
 	    //this.reset();
+	    if(!items) return;
 
-	    if($.isArray(options)) {
-	        $.each(options, function(i, option) {
-	            this.add(option);
+	    this.settings = $.extend({}, SwitchTab.defaultSetting, options);
+
+	    if($.isArray(items)) {
+	        $.each(items, function(i, item) {
+	            this.add(item);
 	        }.bind(this));
-	    } else if($.isPlainObject(options)){
-	        var tabs = options.tabs || [],
-	            containers = options.containers || [],
-	            names = options.names || [],
-	            option;
-
-	        delete options.tabs;
-	        delete options.containers;
-	        delete options.names;
-
+	    } else if($.isPlainObject(items)){
+	        var tabs = items.tabs || [],
+	            containers = items.containers || [],
+	            names = items.names || [],
+	            enables = $.isArray(items.enables) ? items.enables : [];
 	        $.each(tabs, function(i, tab) {
-	            this.add($.extend(options, {
+	            this.add({
 	                tab: tab,
 	                container: containers[i],
-	                name: names[i] || ''
-	            }));
+	                name: names[i] || '',
+	                enable: $.type(enables[i]) === 'undefined' ? true : !!enables[i]
+	            });
 	        }.bind(this));
 	    } else {
 	        throw 'parse options error:' + options;
 	    }
 
-	    this.to(0, true, true);
+	    this.to(this.settings.startIndex);
 	};
 
 	/**
-	 *  Add tab and container with index param to switchtab in its storage array.
-	 *  @param option {
+	 *  Add tab and container item with index param to switchtab in its storage array.
+	 *  @param item {
 	 *      tab: DOMElement|JqueryObject|JquerySelectors,
 	 *      container: DOMElement|JqueryObject|JquerySelectors,
-	 *      triggerEvent: String,
-	 *      onClass: String
+	 *      name: String,
+	 *      enable: Boolean
 	 *  }
 	 *  @param index Number. The index must between 0 and the storage array length. If out of the range, push it to the end
 	 */
-	proto.add = function(option, index){
-	    if(!option.tab || !option.container) return;
+	proto.add = function(item, index){
+	    if(!item.tab || !item.container) return;
+
+	    var settings = this.settings;
+	    if(!(item instanceof SwitchItem)){
+	        item = new SwitchItem(item, this);
+	    }
+
 	    index = $.isNumeric(index) ? parseInt(index) : this.data.length;
 	    if(index < 0 || index > this.data.length){
 	        index = this.data.length;
 	    }
-	    var opt = this.getOption(option.tab, true);
-	    if(opt){
-	        opt.tab.off('.switchtab');
-	        this.data.splice(this.getIndex(opt, true), 1);
+
+	    var oitem = this.getItem(item.tab);
+	    if(oitem){
+	        oitem.tab.off(settings.eventSuffix);
+	        this.data.splice(this.getIndex(oitem), 1);
+	        oitem.base = oitem.tab = oitem.container = null;
 	    }
-	    option.tab = $(option.tab);
-	    option.container = $(option.container);
-	    option = this.extendOption(option);
-	    if(!option.enable){
-	        option.tab.hide().removeClass('on');
-	        option.container.hide();
+
+	    item.tab = $(item.tab);
+	    item.container = $(item.container);
+	    if(!item.enable){
+	        item.tab.hide().removeClass(settings.activeClass);
+	        item.container.hide();
 	        this.disableNum++;
 	    }
-	    option._triggerHandler = function(event){
-	        if(option.triggerDelay){
-	            option._triggerDelayTimer = setTimeout(function(){
+	    item._triggerHandler = function(event){
+	        if(settings.triggerDelay){
+	            item._triggerDelayTimer = setTimeout(function(){
 	                this.onTriggerTab(event);
-	            }.bind(this), option.triggerDelay);
+	            }.bind(this), settings.triggerDelay);
 	        }else{
 	            this.onTriggerTab(event);
 	        }
 	    }.bind(this);
-	    option.tab.on(option.triggerEvent + '.switchtab',option._triggerHandler).data('switch', option);
-	    if(option.triggerEvent == 'mouseover' && option.triggerDelay){
-	        option.tab.on('mouseout.switchtab', function(){
-	            clearTimeout(option._triggerDelayTimer);
+	    item.tab
+	        .on(settings.triggerEvent + settings.eventSuffix, item._triggerHandler)
+	        .data(settings.namespace, item);
+	    if(settings.triggerEvent == 'mouseover' && settings.triggerDelay){
+	        item.tab.on('mouseout' + settings.eventSuffix, function(){
+	            clearTimeout(item._triggerDelayTimer);
 	        });
 	    }
-	    this.data.splice(index, 0, option);
+	    this.data.splice(index, 0, item);
 	};
 
 	/**
 	 *  Enable the target tab
-	 *  @param target @see getOption. If target is integer, it's based on the true position of the invisible tab.
+	 *  @param target @see getItem. If target is integer, it's based on the true position of the invisible tab.
 	 */
 	proto.enable = function(target){
-	    var option = this.getOption(target, true);
-	    var index = this.getIndex(option, true);
-	    if(!option || option.enable) return;
+	    var item = this.getItem(target, true);
+	    var index = this.getIndex(item, true);
+	    if(!item || item.enable) return;
 
-	    option.enable = true;
-	    option.tab.show();
+	    item.enable = true;
+	    item.tab.show();
 	    this.disableNum--;
 	    if(this.disableNum == this.data.length - 1){
 	        this.to(0);
@@ -351,68 +376,51 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *  @param target @see getOption. If target is integer, it's base on the current visible tab position.
 	 */
 	proto.disable = function(target){
-	    var option = this.getOption(target);
-	    var index = this.getIndex(option);
-	    if(!option || !option.enable) return;
+	    var settings = this.settings;
+	    var item = this.getItem(target);
+	    var index = this.getIndex(item);
+	    if(!item || !item.enable) return;
 
-	    option.enable = false;
-	    option.tab.hide().removeClass('on');
-	    option.container.hide();
+	    item.enable = false;
+	    item.tab.hide().removeClass(settings.activeClass);
+	    item.container.hide();
 	    this.disableNum++;
 
 	    if(index < this.curIndex){
 	        this.curIndex--;
 	    }else if(index == this.curIndex){
-	        var toIndex = this.trigger('disableCurrent', [this.curIndex, index]);
+	        var toIndex = this.trigger('disable.current'+settings.eventSuffix, [this.curIndex, index]);
 	        toIndex = $.isNumeric(toIndex) ? toIndex : this.curIndex - 1;//default choose the previous tab
 	        toIndex = Math.min(Math.max(0, toIndex), this.data.length - 1);
 	        if(this.disableNum == this.data.length){
 	            this.curIndex = -1;
 	        }else{
-	            this.to(toIndex, true, false);
+	            this.to(toIndex, true);
 	        }
 	    }
 	};
 
 	/**
 	 *  Switch to target tab
-	 *  @param target @see getOption
+	 *  @param target @see getItem
 	 *  @param force Boolean. Force to show, although curIndex unchanged
-	 *  @param init Boolean.
 	 */
-	proto.to = function(target, force, init){
-	    var option = this.getOption(target);
-	    var index = this.getIndex(option);
-	    if(!option || index == -1 || (!force && this.curIndex === index)) return;
+	proto.to = function(target, force){
+	    var settings = this.settings;
+	    var item = this.getItem(target);
+	    var index = this.getIndex(item);
+	    if(!item || index == -1 || (!force && this.curIndex === index)) return;
 
-	    if(!init){
-	        // before switch
-	        var flag = true;
-	        if($.isFunction(option.beforSwitch)){
-	            flag = option.beforSwitch.call(this, this.curIndex, index);
-	        } else {
-	            flag = this.trigger('beforSwitch', [this.curIndex, index]);
-	        }
-	        if(!flag) return;
-	    }
+	    // before switch
+	    var flag = this.trigger('before'+settings.eventSuffix, [this.curIndex, index]);
+	    if(!flag) return;
 	    // do switch
-	    var i, len, item;
-	    for(i = 0, len = this.data.length; i < len; i++){
-	        item = this.data[i];
-	        item.tab.removeClass('on');
-	        item.container.hide();
-	    }
-	    option.tab.addClass('on');
-	    option.container.show();
-	    if(!init) {
-	        // after switch
-	        if ($.isFunction(option.afterSwitch)) {
-	            option.afterSwitch.call(this, this.curIndex, index);
-	        } else {
-	            this.trigger('afterSwitch', [this.curIndex, index]);
-	        }
-	    }
+	    this.doSwitch(item);
+	    // after switch
+	    var lastIndex = this.curIndex;
 	    this.curIndex = index;
+	    this.curItem = item;
+	    this.trigger('after'+settings.eventSuffix, [lastIndex, this.curIndex]);
 	};
 
 	/**
@@ -429,11 +437,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.to(this.curIndex + 1);
 	};
 
+	proto.doSwitch = function(item){
+	    var settings = this.settings;
+	    for(var i = 0, len = this.data.length; i < len; i++){
+	        this.data[i].tab.removeClass(settings.activeClass);
+	        this.data[i].container.hide();
+	    }
+	    item.tab.addClass(settings.activeClass);
+	    item.container.show();
+	};
+
 	proto.onTriggerTab = function(event){
 	    var target = event.currentTarget;
-	    var option = $(target).data('switch');
-	    if(!option.onClass || !option.tab.hasClass(option.onClass)){
-	        this.to(option.tab, false, false);
+	    var settings = this.settings;
+	    var item = $(target).data(settings.namespace);
+	    if(!settings.activeClass || !item.tab.hasClass(settings.activeClass)){
+	        this.to(item.tab, false, false);
 	    }
 	};
 
@@ -953,6 +972,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	        },
 	    isJQuery: function (obj) {
 	        return obj instanceof jQuery;
+	    },
+	    inherits: function(ctor, superCtor) {
+	        if (ctor === undefined || ctor === null)
+	            throw new TypeError('The constructor to `inherits` must not be ' +
+	                'null or undefined.');
+
+	        if (superCtor === undefined || superCtor === null)
+	            throw new TypeError('The super constructor to `inherits` must not ' +
+	                'be null or undefined.');
+
+	        if (superCtor.prototype === undefined)
+	            throw new TypeError('The super constructor to `inherits` must ' +
+	                'have a prototype.');
+
+	        ctor.super_ = superCtor;
+	        ctor.prototype = Object.create(superCtor.prototype, {
+	            constructor: {
+	                value: ctor,
+	                enumerable: false,
+	                writable: true,
+	                configurable: true
+	            }
+	        });
 	    }
 	};
 

@@ -1,4 +1,4 @@
-var st, options, option;
+var st, items, item;
 
 describe("SwitchTab", function () {
     testInit();
@@ -17,8 +17,8 @@ function testInit(){
             expect(st.curIndex).toBe(0);
             $('.tabs a').each(function (i, tab) {
                 tab = $(tab);
-                option = tab.data('switch');
-                expect(option).toBe(st.data[i]);
+                item = tab.data('switch');
+                expect(item).toBe(st.data[i]);
                 if (i == 0) {
                     expect(tab).toBeSelected();
                 } else {
@@ -30,7 +30,8 @@ function testInit(){
         it("constructor", function () {
             st = new SwitchTab({
                 tabs: $('.tabs a'),
-                containers: $('.containers .container'),
+                containers: $('.containers .container')
+            }, {
                 triggerEvent: 'mouseover'
             });
         });
@@ -41,7 +42,8 @@ function testInit(){
             expect(st.curIndex).toBe(-1);
             st.init({
                 tabs: $('.tabs a'),
-                containers: $('.containers .container'),
+                containers: $('.containers .container')
+            }, {
                 triggerEvent: 'mouseover'
             });
         });
@@ -70,48 +72,47 @@ function testAdd(){
         beforeEach(function () {
             st = new SwitchTab({
                 tabs: $('.tabs a:lt(3)'),
-                containers: $('.containers .container:lt(3)'),
+                containers: $('.containers .container:lt(3)')
+            }, {
                 triggerEvent: 'mouseover'
             });
             expect(st.data.length).toBe(3);
-            option = {
+            item = {
                 tab: $('.tabs a:eq(3)'),
-                container: $('.containers .container:eq(3)'),
-                triggerEvent: 'mouseover'
+                container: $('.containers .container:eq(3)')
             };
         });
 
         it("without index", function () {
-            st.add(option);
+            st.add(item);
             expect(st.data.length).toBe(4);
         });
 
         var index = -5 + Math.round(Math.random() * 15);
         it("with index " + index, function () {
-            st.add(option, index);
+            st.add(item, index);
             var len = st.data.length;
             expect(len).toBe(4);
             if (index < 0 || index >= len) {
                 index = len - 1;
             }
-            expect(st.data[index]).toEqual(option.tab.data('switch'));
+            expect(st.data[index]).toEqual(item.tab.data('switch'));
             expect(st.data.length).toBe(4);
         });
 
         it("tab exist", function () {
             var len = st.data.length;
-            option = {
+            item = {
                 tab: $('.tabs a:eq(1)'),
-                container: $('.containers .container:eq(1)'),
-                triggerEvent: 'mouseover'
+                container: $('.containers .container:eq(1)')
             };
-            st.add(option);
+            st.add(item);
             expect(st.data.length).toBe(len);
-            expect(st.data[2].tab.get(0)).toBe(option.tab.get(0));
+            expect(st.data[2].tab.get(0)).toBe(item.tab.get(0));
             var newIndex = Math.floor(Math.random() * len);
-            st.add(option, newIndex);
+            st.add(item, newIndex);
             expect(st.data.length).toBe(len);
-            expect(st.data[newIndex].tab.get(0)).toBe(option.tab.get(0));
+            expect(st.data[newIndex].tab.get(0)).toBe(item.tab.get(0));
         });
     });
 }
@@ -121,7 +122,8 @@ function testTo(){
         beforeEach(function () {
             st = new SwitchTab({
                 tabs: $('.tabs a'),
-                containers: $('.containers .container'),
+                containers: $('.containers .container')
+            }, {
                 triggerEvent: 'mouseover'
             });
         });
@@ -145,16 +147,16 @@ function testTo(){
 
         var tabIndex = Math.floor(Math.random() * 4);
         it("pass tab[" + tabIndex + "] element", function () {
-            option = st.data[tabIndex];
-            st.to(option.tab[0]);
+            item = st.data[tabIndex];
+            st.to(item.tab[0]);
             expect(st.curIndex).toBe(tabIndex);
-            expect(option.tab).toBeSelected();
+            expect(item.tab).toBeSelected();
         });
         it("pass tab[" + tabIndex + "] jquery object", function () {
-            option = st.data[tabIndex];
-            st.to(option.tab);
+            item = st.data[tabIndex];
+            st.to(item.tab);
             expect(st.curIndex).toBe(tabIndex);
-            expect(option.tab).toBeSelected();
+            expect(item.tab).toBeSelected();
         });
 
         it("pass 3 then pass 1", function () {
@@ -170,8 +172,8 @@ function testTo(){
 
         var triggerIndex = Math.floor(Math.random() * 4);
         it("trigger by tab[" + triggerIndex + "] event", function () {
-            option = st.data[triggerIndex];
-            option.tab.trigger(option.triggerEvent);
+            item = st.data[triggerIndex];
+            item.tab.trigger(st.settings.triggerEvent);
             expect(st.curIndex).toBe(triggerIndex);
             expect(st.data[triggerIndex].tab).toBeSelected();
         });
@@ -183,7 +185,8 @@ function testPrevNext(){
         beforeEach(function () {
             st = new SwitchTab({
                 tabs: $('.tabs a'),
-                containers: $('.containers .container'),
+                containers: $('.containers .container')
+            }, {
                 triggerEvent: 'mouseover'
             });
         });
@@ -236,7 +239,7 @@ function testHandler(){
     describe("handler", function () {
         beforeEach(function () {
             st = new SwitchTab();
-            options = {
+            items = {
                 tabs: $('.tabs a'),
                 containers: $('.containers .container')
             };
@@ -246,23 +249,10 @@ function testHandler(){
                 item.tab.off();
             });
         });
-        it("options.beforSwitch", function () {
+        it("event before.switch", function () {
             var curIndex, nextIndex;
-            options.beforSwitch = function (cur, next) {
-                expect(cur).toBe(curIndex);
-                expect(next).toBe(nextIndex);
-                expect(st.data[cur].tab).toBeSelected();
-                expect(st.data[next].tab).not.toBeSelected();
-            };
-            st.init(options);
-            curIndex = st.curIndex;
-            nextIndex = 3;
-            st.to(nextIndex);
-        });
-        it("event beforSwitch", function () {
-            var curIndex, nextIndex;
-            st.init(options);
-            st.on('beforSwitch', function (cur, next) {
+            st.init(items);
+            st.on('before.switch', function (cur, next) {
                 expect(cur).toBe(curIndex);
                 expect(next).toBe(nextIndex);
                 expect(st.data[cur].tab).toBeSelected();
@@ -272,23 +262,10 @@ function testHandler(){
             nextIndex = 3;
             st.to(nextIndex);
         });
-        it("options.afterSwitch", function () {
+        it("event after.switch", function () {
             var prevIndex, curIndex;
-            options.afterSwitch = function (prev, cur) {
-                expect(prev).toBe(prevIndex);
-                expect(cur).toBe(curIndex);
-                expect(st.data[prev].tab).not.toBeSelected();
-                expect(st.data[cur].tab).toBeSelected();
-            };
-            st.init(options);
-            prevIndex = st.curIndex;
-            curIndex = 3;
-            st.to(curIndex);
-        });
-        it("event afterSwitch", function () {
-            var prevIndex, curIndex;
-            st.init(options);
-            st.on('afterSwitch', function (prev, cur) {
+            st.init(items);
+            st.on('after.switch', function (prev, cur) {
                 expect(prev).toBe(prevIndex);
                 expect(cur).toBe(curIndex);
                 expect(st.data[prev].tab).not.toBeSelected();
@@ -307,9 +284,9 @@ function testDisable(){
             st = new SwitchTab({
                 tabs: $('.tabs a').show(),
                 containers: $('.containers .container'),
-                names: $('.tabs a').map(function(){return $(this).attr('name')}),
-                triggerEvent: 'mouseover',
-                enable: true
+                names: $('.tabs a').map(function(){return $(this).attr('name')})
+            }, {
+                triggerEvent: 'mouseover'
             });
         });
         afterEach(function () {
@@ -367,15 +344,16 @@ function testEnable(){
             st = new SwitchTab({
                 tabs: $('.tabs a').show(),
                 containers: $('.containers .container'),
-                triggerEvent: 'mouseover',
-                enable: true
+                names: $('.tabs a').map(function(){return $(this).attr('name')})
+            }, {
+                triggerEvent: 'mouseover'
             });
             st.disable(disable);
         });
         var enableTest = function (spec) {
             return function(){
                 st.to(spec.to);
-                var isVail = st.getOption(spec.enable, true).enable === false;
+                var isVail = st.getItem(spec.enable, true).enable === false;
                 st.enable(spec.enable);
                 if(isVail){
                     if(spec.enable <= spec.to){
